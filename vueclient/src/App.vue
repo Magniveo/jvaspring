@@ -31,7 +31,7 @@ export default class App extends Vue {
             appTitle: 'VueAppJs',
             sidebar: false,
             menuItems: [
-                { title: 'Станции', path: '/loadfile', icon: 'mdi-radio-tower' },
+                { title: 'Загрузка файла', path: '/loadfile', icon: 'mdi-radio-tower' },
             ]
         }
     }
