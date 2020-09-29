@@ -6,6 +6,8 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -58,7 +60,7 @@ public class FileLoadController {
             ArrayNode arrayNode = getArrayNode(part);
             retres.add(arrayNode);
             retres.add(get2ArrayNode(arrayNode));
-            //retres.add(get3ArrayNode(arrayNode));
+            retres.add(get3ArrayNode(arrayNode));
         }
         return ResponseEntity.ok(retres);
     }
@@ -115,6 +117,39 @@ public class FileLoadController {
     private ArrayNode get3ArrayNode(ArrayNode arrayNode){
         ObjectMapper mapper = new ObjectMapper();
         ArrayNode resret = mapper.createArrayNode();
+        List<JsonNode> sorted = new ArrayList<>();
+        for(JsonNode jsonNode : arrayNode) {
+            sorted.add(jsonNode);
+        }
+        Collections.sort(sorted, new Comparator<JsonNode>(){
+            
+            @Override
+            public int compare(JsonNode a, JsonNode b) {
+               Integer valA = 0;
+               Integer valB = 0;
+                try{
+                    Iterator<String>fieldNamesA=a.fieldNames();
+                    Iterator<String>fieldNamesB=b.fieldNames();
+                    //Map.Entry<String,JsonNode> field = fieldNamesA.next();
+                    //String testStr = a.get(fieldNamesA.next()).asText().replace("\"", "");
+                    //String testToStr = a.toString();
+                    //Integer testInteger = a.intValue();
+                    Integer intA = Integer.decode(a.get(fieldNamesA.next()).asText());
+                    String strB = b.get(fieldNamesB.next()).asText();
+                    Integer intB = Integer.decode(strB);
+                    valA = intA;//a == null || a.get(fieldNamesA.next()).asText()=="null" ? 0 : 
+                    valB = intB;
+                }
+                catch(Exception e){
+
+                }
+                int ret =valA.compareTo(valB);
+                return ret;
+            }
+        });
+        for(JsonNode jsonNode:sorted){
+            resret.add(jsonNode);
+        }
         return resret;
     }
     private JsonResult getTextFromPart(Part part) throws IOException {
